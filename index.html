@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>مدرسه علوی — مدیریت عکس</title>
+  <style>
+    /* Reset و سبک پایه */
+    :root{--bg:#f4f7fb;--card:#ffffff;--accent:#2563eb;--muted:#6b7280}
+    *{box-sizing:border-box;font-family: 'Noto Sans', Tahoma, sans-serif}
+    body{margin:0;background:var(--bg);color:#0f172a;padding:18px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    h1{margin:0;font-size:20px}
+    .creator{font-size:13px;color:var(--muted)}
+
+    .container{max-width:1100px;margin:18px auto}
+    .card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 6px 18px rgba(2,6,23,0.06);}
+
+    /* آپلود و ابزارها */
+    .upload-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+    .upload-row input[type=file]{display:none}
+    .btn{background:var(--accent);color:white;padding:10px 12px;border-radius:8px;border:0;cursor:pointer}
+    .btn.secondary{background:#e6eefc;color:#0f172a}
+
+    /* گالری */
+    .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px}
+    .thumb{background:#fafafa;border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:8px;align-items:center}
+    .thumb img{max-width:120px;max-height:100px;border-radius:6px;object-fit:cover}
+    .thumb .actions{display:flex;gap:6px}
+    .small{font-size:12px;color:var(--muted)}
+
+    /* ویرایشگر */
+    .editor{margin-top:16px;display:grid;grid-template-columns:420px 1fr;gap:12px}
+    .canvas-wrap{background:#eef3ff;padding:12px;border-radius:10px;display:flex;flex-direction:column;align-items:center}
+    canvas{background:white;border-radius:6px;border:1px solid #e6e9ef;max-width:100%}
+    .controls{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+    .controls .row{display:flex;gap:8px;align-items:center}
+    label.small-inline{font-size:13px;margin-left:6px}
+
+    footer{margin-top:20px;text-align:center;color:var(--muted);font-size:13px}
+
+    @media(max-width:900px){.editor{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>مدرسه علوی</h1>
+        <div class="creator">سازنده: محمد پارسا ولیان</div>
+      </div>
+      <div>
+        <button id="githubBtn" class="btn secondary" title="راهنما">راهنمای انتشار</button>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="upload-row">
+        <label class="btn" for="fileInput">📤 آپلود عکس</label>
+        <input id="fileInput" type="file" accept="image/*" multiple />
+        <button id="clearAll" class="btn secondary">حذف همه</button>
+        <div style="margin-left:auto;align-self:center" class="small">عکس‌ها در مرورگر ذخیره می‌شوند (غیر دائمی)</div>
+      </div>
+
+      <div class="gallery card" id="gallery"></div>
+
+      <div class="editor">
+        <div class="canvas-wrap card">
+          <canvas id="canvas" width="800" height="600"></canvas>
+          <div class="controls">
+            <div class="row">
+              <button id="rotateBtn" class="btn">⤴️ چرخش 90°</button>
+              <button id="flipHBtn" class="btn secondary">🔁 افقی</button>
+              <button id="flipVBtn" class="btn secondary">🔃 عمودی</button>
+            </div>
+
+            <div class="row">
+              <label class="small-inline">روشنایی</label>
+              <input id="brightness" type="range" min="0" max="200" value="100" />
+              <span id="brightVal" class="small">100%</span>
+            </div>
+
+            <div class="row">
+              <label class="small-inline">فیلتر سیاه‌سفید</label>
+              <input id="grayscale" type="checkbox" />
+            </div>
+
+            <div class="row">
+              <label class="small-inline">اندازه (عرض px)</label>
+              <input id="resizeWidth" type="number" min="100" value="800" style="width:110px" />
+              <button id="applyResize" class="btn secondary">اعمال اندازه</button>
+            </div>
+
+            <div class="row">
+              <button id="downloadBtn" class="btn">⬇️ دانلود تصویر ویرایش‌شده</button>
+              <button id="saveBtn" class="btn secondary">💾 ذخیره در گالری</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-top:0">راهنما</h3>
+          <ol style="padding-inline-start:18px">
+            <li>عکس را با "آپلود عکس" اضافه کنید.</li>
+            <li>روی هر تصویر در گالری کلیک کنید تا در ویرایشگر باز شود.</li>
+            <li>از ابزارها برای چرخش، برگرداندن، روشنایی و فیلتر استفاده کنید.</li>
+            <li>با «دانلود» تصویر ویرایش‌شده را ذخیره کنید یا با «ذخیره در گالری» نسخه جدید را داخل صفحه نگه دارید.</li>
+          </ol>
+          <div class="small">پیشنهاد: برای انتشار در گیت‌هاب، این فایل را به نام index.html در ریشهٔ یک مخزن قرار دهید و GitHub Pages را فعال کنید.</div>
+        </div>
+      </div>
+    </section>
+
+    <footer>© مدرسه علوی — سازنده: محمد پارسا ولیان</footer>
+  </div>
+
+  <script>
+    // مدیریت گالری و ویرایش
+    const fileInput = document.getElementById('fileInput');
+    const gallery = document.getElementById('gallery');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // کنترل‌ها
+    const rotateBtn = document.getElementById('rotateBtn');
+    const flipHBtn = document.getElementById('flipHBtn');
+    const flipVBtn = document.getElementById('flipVBtn');
+    const brightness = document.getElementById('brightness');
+    const brightVal = document.getElementById('brightVal');
+    const grayscale = document.getElementById('grayscale');
+    const resizeWidth = document.getElementById('resizeWidth');
+    const applyResize = document.getElementById('applyResize');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const clearAll = document.getElementById('clearAll');
+
+    let images = []; // {id,name,dataURL}
+    let current = null; // current image object
+    let transform = {rot:0,flipH:false,flipV:false,bright:100,gray:false};
+
+    function generateId(){return Math.random().toString(36).slice(2,9)}
+
+    // بارگذاری فایل‌ها
+    fileInput.addEventListener('change', e=>{
+      const files = Array.from(e.target.files);
+      files.forEach(f=>{
+        const reader = new FileReader();
+        reader.onload = ev=>{
+          const id = generateId();
+          images.push({id,name:f.name,data:ev.target.result});
+          renderGallery();
+        };
+        reader.readAsDataURL(f);
+      });
+      fileInput.value = '';
+    });
+
+    function renderGallery(){
+      gallery.innerHTML = '';
+      images.forEach(img=>{
+        const el = document.createElement('div'); el.className='thumb';
+        const im = document.createElement('img'); im.src = img.data; im.alt = img.name;
+        im.addEventListener('click', ()=>{openEditor(img.id)});
+        const name = document.createElement('div'); name.className='small'; name.textContent = img.name;
+        const actions = document.createElement('div'); actions.className='actions';
+        const del = document.createElement('button'); del.className='btn secondary'; del.textContent='حذف';
+        del.onclick = ()=>{ if(confirm('حذف شود؟')){ images = images.filter(i=>i.id!==img.id); if(current && current.id===img.id){clearCanvas(); current=null;} renderGallery(); }}
+        actions.appendChild(del);
+        el.appendChild(im); el.appendChild(name); el.appendChild(actions);
+        gallery.appendChild(el);
+      });
+    }
+
+    function openEditor(id){
+      const imgObj = images.find(i=>i.id===id);
+      if(!imgObj) return;
+      current = imgObj;
+      transform = {rot:0,flipH:false,flipV:false,bright:100,gray:false};
+      brightness.value = 100; brightVal.textContent='100%'; grayscale.checked = false; resizeWidth.value = canvas.width;
+      loadToCanvas(imgObj.data);
+    }
+
+    function loadToCanvas(src){
+      const img = new Image(); img.onload = ()=>{
+        // اندازهٔ canvas را تنظیم به اندازهٔ تصویر (حداکثر 1200 در عرض)
+        const maxW = 1200;
+        let w = img.width, h = img.height;
+        if(w>maxW){ const ratio = maxW/w; w = maxW; h = Math.round(h*ratio); }
+        canvas.width = w; canvas.height = h; resizeWidth.value = w;
+        // پاک و رسم
+        transform.rot = 0; transform.flipH=false; transform.flipV=false;
+        applyAllTransforms(img);
+      };
+      img.src = src;
+    }
+
+    function applyAllTransforms(img){
+      // ذخیرهٔ تصویر مبدأ در یک بوم موقت برای فیلترها
+      const temp = document.createElement('canvas');
+      // برای چرخش، اگر 90 یا 270 باشه، باید ابعاد عوض شوند
+      const rot = transform.rot % 360;
+      const needSwap = Math.abs(rot) === 90 || Math.abs(rot) === 270;
+      temp.width = needSwap ? canvas.height : canvas.width;
+      temp.height = needSwap ? canvas.width : canvas.height;
+      const tctx = temp.getContext('2d');
+
+      // رسم اولیه با توجه به flip/rotate
+      tctx.save();
+      // مرکز برای چرخش
+      tctx.translate(temp.width/2, temp.height/2);
+      tctx.rotate(rot * Math.PI/180);
+      tctx.scale(transform.flipH ? -1 : 1, transform.flipV ? -1 : 1);
+      // بعد از تبدیل، باید تصویر را در مرکز قرار دهیم
+      tctx.drawImage(img, -img.width/2, -img.height/2, img.width, img.height);
+      tctx.restore();
+
+      // دریافت پیکسل‌ها برای اعمال روشنایی و خاکستری
+      const imgData = tctx.getImageData(0,0,temp.width,temp.height);
+      const data = imgData.data;
+      const bright = transform.bright/100;
+      for(let i=0;i<data.length;i+=4){
+        if(transform.gray){
+          const avg = 0.299*data[i]+0.587*data[i+1]+0.114*data[i+2];
+          data[i]=data[i+1]=data[i+2]=avg*bright;
+        } else {
+          data[i] = Math.min(255, data[i]*bright);
+          data[i+1] = Math.min(255, data[i+1]*bright);
+          data[i+2] = Math.min(255, data[i+2]*bright);
+        }
+      }
+      tctx.putImageData(imgData,0,0);
+
+      // حالا بوم اصلی را با اندازهٔ canvas فعلی تنظیم و رسم کنیم
+      // اگر اندازهٔ canvas تغییر کرده (مثلاً با resize) بوم مقیاس می‌یابد
+      const finalW = canvas.width; const finalH = canvas.height;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      // رسم از temp به canvas با مقیاس
+      ctx.drawImage(temp, 0, 0, temp.width, temp.height, 0, 0, finalW, finalH);
+    }
+
+    // کنترل‌ها
+    rotateBtn.addEventListener('click', ()=>{
+      if(!current) return alert('یک تصویر انتخاب کنید.');
+      transform.rot = (transform.rot + 90) % 360;
+      const img = new Image(); img.onload = ()=>applyAllTransforms(img); img.src = current.data;
+    });
+    flipHBtn.addEventListener('click', ()=>{ if(!current) return alert('یک تصویر انتخاب کنید.'); transform.flipH = !transform.flipH; const img=new Image(); img.onload=()=>applyAllTransforms(img); img.src=current.data; });
+    flipVBtn.addEventListener('click', ()=>{ if(!current) return alert('یک تصویر انتخاب کنید.'); transform.flipV = !transform.flipV; const img=new Image(); img.onload=()=>applyAllTransforms(img); img.src=current.data; });
+
+    brightness.addEventListener('input', ()=>{
+      brightVal.textContent = brightness.value + '%';
+      transform.bright = Number(brightness.value);
+      if(!current) return;
+      const img=new Image(); img.onload=()=>applyAllTransforms(img); img.src=current.data;
+    });
+    grayscale.addEventListener('change', ()=>{ transform.gray = grayscale.checked; if(!current) return; const img=new Image(); img.onload=()=>applyAllTransforms(img); img.src=current.data; });
+
+    applyResize.addEventListener('click', ()=>{
+      if(!current) return alert('یک تصویر انتخاب کنید.');
+      const w = Number(resizeWidth.value) || canvas.width;
+      // محاسبه نسبت و تنظیم ارتفاع
+      const ratio = canvas.height / canvas.width || 1;
+      canvas.width = w; canvas.height = Math.round(w * ratio);
+      const img = new Image(); img.onload = ()=>applyAllTransforms(img); img.src = current.data;
+    });
+
+    downloadBtn.addEventListener('click', ()=>{
+      if(!current) return alert('یک تصویر انتخاب کنید.');
+      const link = document.createElement('a');
+      link.download = (current.name || 'edited') + '.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+
+    saveBtn.addEventListener('click', ()=>{
+      if(!current) return alert('یک تصویر انتخاب کنید.');
+      const data = canvas.toDataURL('image/png');
+      const id = generateId();
+      images.push({id,name:(current.name||'edited') + '_edited.png',data});
+      renderGallery();
+      alert('نسخهٔ ویرایش‌شده در گالری ذخیره شد.');
+    });
+
+    clearAll.addEventListener('click', ()=>{ if(confirm('همهٔ عکس‌ها حذف شوند؟')){ images=[]; current=null; clearCanvas(); renderGallery(); } });
+
+    function clearCanvas(){ ctx.clearRect(0,0,canvas.width,canvas.height); }
+
+    // دکمه راهنما برای انتشار در گیت‌هاب
+    document.getElementById('githubBtn').addEventListener('click', ()=>{
+      alert('برای انتشار:\n1) یک مخزن جدید در GitHub بسازید.\n2) این فایل را به نام index.html در ریشهٔ مخزن قرار دهید.\n3) در تنظیمات مخزن GitHub Pages را روشن کنید و شاخه را انتخاب کنید (main).\nسایت شما با آدرس username.github.io/repo-name منتشر خواهد شد.');
+    });
+
+    // نمونهٔ اولیه: اگر تمایل دارید می‌توانم کد را با امکانات بیشتر (برش، کپشن، ترتیب‌دهی) گسترش دهم.
+  </script>
+</body>
+</html>
