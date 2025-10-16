@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>مدرسه علوی — مدیریت عکس</title>
+  <title>مدرسه علوی — مدیریت عکس (ذخیره دائمی)</title>
   <style>
     :root{--bg:#f4f7fb;--card:#ffffff;--accent:#2563eb;--muted:#6b7280}
     *{box-sizing:border-box;font-family:'Noto Sans',Tahoma,sans-serif}
@@ -47,7 +47,7 @@
         <input id="fileInput" type="file" accept="image/*" multiple />
         <button id="clearAll" class="btn secondary">حذف همه</button>
         <div style="margin-left:auto;align-self:center" class="small">
-          عکس‌ها در مرورگر ذخیره می‌شوند (غیر دائمی)
+          عکس‌ها به‌صورت دائمی در مرورگر ذخیره می‌شوند
         </div>
       </div>
 
@@ -92,8 +92,8 @@
           <ol style="padding-inline-start:18px">
             <li>عکس را با «آپلود عکس» اضافه کنید.</li>
             <li>روی هر تصویر در گالری کلیک کنید تا در ویرایشگر باز شود.</li>
-            <li>از ابزارها برای چرخش، برگرداندن، روشنایی و فیلتر استفاده کنید.</li>
-            <li>با «دانلود» تصویر ویرایش‌شده را ذخیره کنید یا با «ذخیره در گالری» نسخه جدید را داخل صفحه نگه دارید.</li>
+            <li>ویرایش کن و با «ذخیره در گالری» یا «دانلود» نتیجه را نگه دار.</li>
+            <li>عکس‌ها به‌صورت خودکار در مرورگر ذخیره می‌شوند.</li>
           </ol>
         </div>
       </div>
@@ -119,10 +119,23 @@
     const saveBtn=document.getElementById('saveBtn');
     const clearAll=document.getElementById('clearAll');
 
-    let images=[];let current=null;
+    let images=[];
+    let current=null;
     let transform={rot:0,flipH:false,flipV:false,bright:100,gray:false};
 
     function generateId(){return Math.random().toString(36).slice(2,9)}
+
+    // ✅ ذخیره و بازیابی از localStorage
+    function saveToStorage(){
+      localStorage.setItem('alavi-images',JSON.stringify(images));
+    }
+    function loadFromStorage(){
+      const data=localStorage.getItem('alavi-images');
+      if(data){
+        images=JSON.parse(data);
+        renderGallery();
+      }
+    }
 
     fileInput.addEventListener('change',e=>{
       const files=Array.from(e.target.files);
@@ -131,6 +144,7 @@
         reader.onload=ev=>{
           const id=generateId();
           images.push({id,name:f.name,data:ev.target.result});
+          saveToStorage();
           renderGallery();
         };
         reader.readAsDataURL(f);
@@ -159,6 +173,7 @@
           if(confirm('حذف شود؟')){
             images=images.filter(i=>i.id!==img.id);
             if(current&&current.id===img.id){clearCanvas();current=null;}
+            saveToStorage();
             renderGallery();
           }
         };
@@ -232,9 +247,12 @@
     grayscale.addEventListener('change',()=>{transform.gray=grayscale.checked;if(!current)return;const img=new Image();img.onload=()=>applyAllTransforms(img);img.src=current.data;});
     applyResize.addEventListener('click',()=>{if(!current)return alert('یک تصویر انتخاب کنید.');const w=Number(resizeWidth.value)||canvas.width;const ratio=canvas.height/canvas.width||1;canvas.width=w;canvas.height=Math.round(w*ratio);const img=new Image();img.onload=()=>applyAllTransforms(img);img.src=current.data;});
     downloadBtn.addEventListener('click',()=>{if(!current)return alert('یک تصویر انتخاب کنید.');const link=document.createElement('a');link.download=(current.name||'edited')+'.png';link.href=canvas.toDataURL('image/png');link.click();});
-    saveBtn.addEventListener('click',()=>{if(!current)return alert('یک تصویر انتخاب کنید.');const data=canvas.toDataURL('image/png');const id=generateId();images.push({id,name:(current.name||'edited')+'_edited.png',data});renderGallery();alert('نسخهٔ ویرایش‌شده در گالری ذخیره شد.');});
-    clearAll.addEventListener('click',()=>{if(confirm('همهٔ عکس‌ها حذف شوند؟')){images=[];current=null;clearCanvas();renderGallery();}});
+    saveBtn.addEventListener('click',()=>{if(!current)return alert('یک تصویر انتخاب کنید.');const data=canvas.toDataURL('image/png');const id=generateId();images.push({id,name:(current.name||'edited')+'_edited.png',data});saveToStorage();renderGallery();alert('نسخهٔ ویرایش‌شده ذخیره شد ✅');});
+    clearAll.addEventListener('click',()=>{if(confirm('همهٔ عکس‌ها حذف شوند؟')){images=[];current=null;clearCanvas();saveToStorage();renderGallery();}});
     function clearCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height);}
+
+    // ✅ هنگام باز شدن صفحه
+    loadFromStorage();
   </script>
 </body>
 </html>
