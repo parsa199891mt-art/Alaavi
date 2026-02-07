@@ -1,23 +1,70 @@
 <!-- index.html -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>گالری مدرسه علوی</title>
-  <link rel="stylesheet" href="css/style.css">
+
+  <!-- فونت (اگر می‌خوای فونت محلی بذاری، آدرس رو عوض کن) -->
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <header class="site-header">
+    <div class="container header-grid">
+      <div class="brand">
+        <div class="logo">A</div>
+        <div>
+          <h1>مدرسه علوی</h1>
+          <p class="muted">گالری تصاویر و آلبوم‌ها</p>
+        </div>
+      </div>
 
-<header>
-  <h1>گالری تصاویر مدرسه علوی</h1>
-</header>
+      <nav class="top-nav">
+        <input id="searchInput" type="search" placeholder="جستجو در تصاویر..." />
+        <select id="albumFilter">
+          <option value="">همه آلبوم‌ها</option>
+        </select>
+        <a class="btn" href="admin.html">پنل ادمین</a>
+      </nav>
+    </div>
+  </header>
 
-<main id="gallery" class="gallery"></main>
+  <main class="container">
+    <section class="summary">
+      <div id="stats" class="stats">
+        <div>آلبوم‌ها: <span id="albumsCount">0</span></div>
+        <div>تصاویر: <span id="imagesCount">0</span></div>
+      </div>
+    </section>
 
-<footer>
-  تمام حقوق این سایت متعلق به محمد پارسا ولیان است
-</footer>
+    <section id="gallerySection" class="gallery-section">
+      <!-- کارت آلبوم‌ها و گالری عکس‌ها اینجا رندر میشه -->
+      <div id="cards" class="cards-grid"></div>
+    </section>
+  </main>
 
-<script src="js/main.js"></script>
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>تمام حقوق این سایت متعلق به <strong>محمد پارسا ولیان</strong> است</div>
+      <div class="muted">این گالری فقط روی مرورگر شما ذخیره می‌شود.</div>
+    </div>
+  </footer>
+
+  <!-- لایت‌باکس -->
+  <div id="lightbox" class="lightbox" aria-hidden="true">
+    <button class="lb-close" id="lbClose" title="بستن">✕</button>
+    <button class="lb-prev" id="lbPrev" title="قبلی">‹</button>
+    <div class="lb-content">
+      <img id="lbImage" alt="">
+      <p id="lbCaption"></p>
+      <div id="lbCounter" class="lb-counter"></div>
+    </div>
+    <button class="lb-next" id="lbNext" title="بعدی">›</button>
+  </div>
+
+  <script src="js/main.js"></script>
 </body>
 </html>
