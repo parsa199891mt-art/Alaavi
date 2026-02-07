@@ -1,80 +1,35 @@
 <!-- admin.html -->
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>پنل ادمین | مدرسه علوی</title>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css" />
+  <meta charset="UTF-8">
+  <title>ورود ادمین | مدرسه علوی</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header class="site-header small">
-    <div class="container header-grid">
-      <div class="brand">
-        <div class="logo">A</div>
-        <div>
-          <h1>پنل ادمین — مدرسه علوی</h1>
-          <p class="muted">مدیریت آلبوم‌ها و تصاویر (محلی)</p>
-        </div>
-      </div>
-      <nav class="top-nav">
-        <a class="btn" href="index.html">بازگشت به گالری</a>
-      </nav>
-    </div>
-  </header>
 
-  <main class="container admin-container">
-    <section id="loginWrap" class="card login-card">
-      <h3>ورود ادمین</h3>
-      <input id="adminPassword" type="password" placeholder="رمز ادمین">
-      <div class="row">
-        <button id="loginBtn" class="btn">ورود</button>
-        <button id="exportBtn" class="btn ghost">خروجی (Export)</button>
-        <button id="importBtn" class="btn ghost">بارگذاری (Import)</button>
-        <input type="file" id="importFile" accept="application/json" style="display:none">
-      </div>
-      <p class="muted small"></p>
-    </section>
+<div class="login-box">
+  <h2>ورود ادمین</h2>
 
-    <section id="panel" style="display:none;">
-      <div class="card upload-card">
-        <h3>آپلود تصاویر — درگ و دراپ یا انتخاب فایل</h3>
-        <div id="dropZone" class="dropzone">
-          <div>فایل‌ها را اینجا بکشید یا <button id="selectFiles" class="link-btn">انتخاب کنید</button></div>
-          <input id="fileInput" type="file" accept="image/*" multiple style="display:none">
-        </div>
+  <input id="password" type="password" placeholder="رمز عبور">
 
-        <div class="row form-row">
-          <input id="newAlbumName" placeholder="نام آلبوم جدید (مثلاً: کلاس چهارم)">
-          <select id="existingAlbumSelect">
-            <option value="">انتخاب آلبوم موجود</option>
-          </select>
-          <button id="createAlbumBtn" class="btn">ایجاد آلبوم</button>
-        </div>
+  <!-- خیلی مهم -->
+  <button type="button" onclick="login()">ورود</button>
+</div>
 
-        <div id="previewArea" class="preview-area"></div>
+<div id="panel" class="admin-panel" style="display:none">
+  <h3>پنل مدیریت</h3>
 
-        <div class="row">
-          <button id="saveImgsBtn" class="btn">ذخیره در مرورگر</button>
-          <button id="clearAllBtn" class="btn danger">پاک کردن همه</button>
-        </div>
-      </div>
+  <input id="albumName" placeholder="نام آلبوم">
+  <input type="file" id="imageFile" accept="image/*">
+  <button type="button" onclick="uploadImage()">آپلود عکس</button>
+</div>
 
-      <div class="card manage-card">
-        <h3>مدیریت آلبوم‌ها</h3>
-        <div id="albumsList" class="albums-list"></div>
-      </div>
-    </section>
-  </main>
+<footer>
+  تمام حقوق این سایت متعلق به محمد پارسا ولیان است
+</footer>
 
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <div>تمام حقوق این سایت متعلق به <strong>محمد پارسا ولیان</strong> است</div>
-      <div class="muted">تغییرات فقط روی مرورگر شما ذخیره می‌شود.</div>
-    </div>
-  </footer>
-
-  <script src="js/admin.js"></script>
+<!-- JS حتما آخر body -->
+<script src="js/admin.js"></script>
 </body>
 </html>
