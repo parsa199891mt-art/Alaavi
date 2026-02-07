@@ -1,35 +1,30 @@
-<!-- admin.html -->
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>ورود ادمین | مدرسه علوی</title>
+  <title>پنل ادمین | مدرسه علوی</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="admin-body">
 
-<div class="login-box">
+<div class="card" id="loginBox">
   <h2>ورود ادمین</h2>
-
-  <input id="password" type="password" placeholder="رمز عبور">
-
-  <!-- خیلی مهم -->
-  <button type="button" onclick="login()">ورود</button>
+  <input type="password" id="password" placeholder="رمز عبور">
+  <button onclick="login()">ورود</button>
 </div>
 
-<div id="panel" class="admin-panel" style="display:none">
-  <h3>پنل مدیریت</h3>
+<div class="card hidden" id="adminPanel">
+  <h2>پنل مدیریت</h2>
 
-  <input id="albumName" placeholder="نام آلبوم">
+  <input type="text" id="albumName" placeholder="نام آلبوم">
   <input type="file" id="imageFile" accept="image/*">
-  <button type="button" onclick="uploadImage()">آپلود عکس</button>
+  <button onclick="uploadImage()">آپلود عکس</button>
 </div>
 
 <footer>
   تمام حقوق این سایت متعلق به محمد پارسا ولیان است
 </footer>
 
-<!-- JS حتما آخر body -->
 <script src="js/admin.js"></script>
 </body>
 </html>
