@@ -1,37 +1,53 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>مدرسه علوی | گالری تصاویر</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>مدرسه علوی — گالری</title>
   <link rel="stylesheet" href="css/style.css">
-  <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <header class="site-header">
+    <div class="container">
+      <div class="brand">
+        <div class="logo">علوی</div>
+        <div>
+          <h1>مدرسه علوی</h1>
+          <p class="muted">گالری تصاویر</p>
+        </div>
+      </div>
 
-<header class="site-header">
-  <h1>مدرسه علوی</h1>
-  <p>گالری تصاویر و آلبوم‌ها</p>
-  <button class="dark-btn" onclick="toggleDark()">🌓</button>
-</header>
+      <div class="actions">
+        <!-- لینک پنل ادمین intentionally removed from UI (hidden). open admin.html manually -->
+        <button id="darkToggle" class="btn small" type="button">🌓</button>
+      </div>
+    </div>
+  </header>
 
-<section id="slider" class="slider"></section>
+  <main class="container main-body">
+    <section id="hero" class="hero">
+      <h2 id="heroTitle">گالری مدرسه علوی</h2>
+      <p id="heroSub" class="muted">همه تصاویر فقط روی مرورگر شما ذخیره می‌شوند.</p>
+    </section>
 
-<main id="gallery" class="gallery-container"></main>
+    <section id="galleryArea" class="gallery-area"></section>
+  </main>
 
-<div id="lightbox" class="lightbox hidden">
-  <span onclick="closeLightbox()">×</span>
-  <img id="lightboxImg">
-</div>
+  <div id="lightbox" class="lightbox" aria-hidden="true">
+    <button id="lbClose" class="lb-close" title="بستن">✕</button>
+    <button id="lbPrev" class="lb-nav" title="قبلی">‹</button>
+    <div class="lb-content">
+      <img id="lbImg" alt="">
+      <div id="lbCaption" class="lb-caption"></div>
+      <div id="lbCounter" class="lb-counter"></div>
+    </div>
+    <button id="lbNext" class="lb-nav" title="بعدی">›</button>
+  </div>
 
-<footer class="site-footer">
-  تمام حقوق این سایت متعلق به محمد پارسا ولیان است
-</footer>
+  <footer class="site-footer">
+    تمام حقوق این سایت متعلق به محمد پارسا ولیان است
+  </footer>
 
-<script src="js/main.js"></script>
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
-}
-</script>
+  <script src="js/main.js"></script>
 </body>
 </html>
