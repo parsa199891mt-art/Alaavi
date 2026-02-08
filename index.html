@@ -1,70 +1,37 @@
-<!-- index.html -->
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>گالری مدرسه علوی</title>
-
-  <!-- فونت (اگر می‌خوای فونت محلی بذاری، آدرس رو عوض کن) -->
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="css/style.css" />
+  <meta charset="UTF-8">
+  <title>مدرسه علوی | گالری تصاویر</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="manifest.json">
 </head>
 <body>
-  <header class="site-header">
-    <div class="container header-grid">
-      <div class="brand">
-        <div class="logo">A</div>
-        <div>
-          <h1>مدرسه علوی</h1>
-          <p class="muted">گالری تصاویر و آلبوم‌ها</p>
-        </div>
-      </div>
 
-      <nav class="top-nav">
-        <input id="searchInput" type="search" placeholder="جستجو در تصاویر..." />
-        <select id="albumFilter">
-          <option value="">همه آلبوم‌ها</option>
-        </select>
-        <a class="btn" href="admin.html">پنل ادمین</a>
-      </nav>
-    </div>
-  </header>
+<header class="site-header">
+  <h1>مدرسه علوی</h1>
+  <p>گالری تصاویر و آلبوم‌ها</p>
+  <button class="dark-btn" onclick="toggleDark()">🌓</button>
+</header>
 
-  <main class="container">
-    <section class="summary">
-      <div id="stats" class="stats">
-        <div>آلبوم‌ها: <span id="albumsCount">0</span></div>
-        <div>تصاویر: <span id="imagesCount">0</span></div>
-      </div>
-    </section>
+<section id="slider" class="slider"></section>
 
-    <section id="gallerySection" class="gallery-section">
-      <!-- کارت آلبوم‌ها و گالری عکس‌ها اینجا رندر میشه -->
-      <div id="cards" class="cards-grid"></div>
-    </section>
-  </main>
+<main id="gallery" class="gallery-container"></main>
 
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <div>تمام حقوق این سایت متعلق به <strong>محمد پارسا ولیان</strong> است</div>
-      <div class="muted">این گالری فقط روی مرورگر شما ذخیره می‌شود.</div>
-    </div>
-  </footer>
+<div id="lightbox" class="lightbox hidden">
+  <span onclick="closeLightbox()">×</span>
+  <img id="lightboxImg">
+</div>
 
-  <!-- لایت‌باکس -->
-  <div id="lightbox" class="lightbox" aria-hidden="true">
-    <button class="lb-close" id="lbClose" title="بستن">✕</button>
-    <button class="lb-prev" id="lbPrev" title="قبلی">‹</button>
-    <div class="lb-content">
-      <img id="lbImage" alt="">
-      <p id="lbCaption"></p>
-      <div id="lbCounter" class="lb-counter"></div>
-    </div>
-    <button class="lb-next" id="lbNext" title="بعدی">›</button>
-  </div>
+<footer class="site-footer">
+  تمام حقوق این سایت متعلق به محمد پارسا ولیان است
+</footer>
 
-  <script src="js/main.js"></script>
+<script src="js/main.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
+</script>
 </body>
 </html>
