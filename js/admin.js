@@ -1,53 +1,97 @@
-const ADMIN_PASSWORD = "parsa1998";
-const albumSelect = document.getElementById("albumSelect");
+document.addEventListener('DOMContentLoaded', () => {
+  const G_KEY = 'alaavi_albums';
+  function load() {
+    try { return JSON.parse(localStorage.getItem(G_KEY)) || []; }
+    catch(e){ return []; }
+  }
+  function save(data){ localStorage.setItem(G_KEY, JSON.stringify(data)); }
 
-function login() {
-  if (document.getElementById("password").value === ADMIN_PASSWORD) {
-    loginBox.classList.add("hidden");
-    adminPanel.classList.remove("hidden");
-    loadAlbums();
-  } else alert("رمز اشتباه است");
-}
+  const gallery = document.getElementById('galleryArea');
+  const darkToggle = document.getElementById('darkToggle');
 
-function loadAlbums() {
-  const albums = JSON.parse(localStorage.getItem("albums")) || [];
-  albumSelect.innerHTML = `<option value="">انتخاب آلبوم</option>`;
-  albums.forEach(a => {
-    const opt = document.createElement("option");
-    opt.value = a.name;
-    opt.textContent = a.name;
-    albumSelect.appendChild(opt);
+  // dark mode init
+  if (localStorage.getItem('alaavi_dark') === 'true') document.body.classList.add('dark');
+  darkToggle.addEventListener('click', () => {
+    const on = document.body.classList.toggle('dark');
+    localStorage.setItem('alaavi_dark', on ? 'true' : 'false');
   });
-}
 
-function uploadImage() {
-  const albumName = newAlbum.value || albumSelect.value;
-  const file = imageFile.files[0];
-  if (!albumName || !file) return;
+  // render
+  function render() {
+    gallery.innerHTML = '';
+    const albums = load();
+    if (!albums.length) {
+      gallery.innerHTML = `<div class="album-card"><div class="album-header"><h3>هیچ آلبومی وجود ندارد</h3></div><div class="album-meta">برای اضافه کردن عکس به بخش admin برو (admin.html)</div></div>`;
+      return;
+    }
 
-  const reader = new FileReader();
-  reader.onload = () => {
-    let albums = JSON.parse(localStorage.getItem("albums")) || [];
-    let album = albums.find(a => a.name === albumName);
-    if (!album) albums.push(album = { name: albumName, images: [] });
-    album.images.push(reader.result);
-    localStorage.setItem("albums", JSON.stringify(albums));
-    loadAlbums();
-  };
-  reader.readAsDataURL(file);
-}
+    albums.forEach(album => {
+      const card = document.createElement('div');
+      card.className = 'album-card';
 
-function deleteLast() {
-  let albums = JSON.parse(localStorage.getItem("albums")) || [];
-  let album = albums.find(a => a.name === albumSelect.value);
-  if (!album) return;
-  album.images.pop();
-  localStorage.setItem("albums", JSON.stringify(albums));
-}
+      const header = document.createElement('div');
+      header.className = 'album-header';
+      header.innerHTML = `<h3>${escapeHtml(album.name)}</h3><div class="album-meta">${album.images.length} تصویر</div>`;
 
-function deleteAlbum() {
-  let albums = JSON.parse(localStorage.getItem("albums")) || [];
-  albums = albums.filter(a => a.name !== albumSelect.value);
-  localStorage.setItem("albums", JSON.stringify(albums));
-  loadAlbums();
-}
+      const thumbGrid = document.createElement('div');
+      thumbGrid.className = 'thumb-grid';
+      // show up to 6 thumbs
+      album.images.slice(0,8).forEach((imgObj, idx)=>{
+        const img = document.createElement('img');
+        img.src = imgObj.src;
+        img.alt = album.name;
+        img.addEventListener('click', ()=> openLightbox(album, idx));
+        thumbGrid.appendChild(img);
+      });
+
+      card.appendChild(header);
+      card.appendChild(thumbGrid);
+      gallery.appendChild(card);
+    });
+  }
+
+  // Lightbox
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lbImg');
+  const lbCaption = document.getElementById('lbCaption');
+  const lbCounter = document.getElementById('lbCounter');
+  const lbClose = document.getElementById('lbClose');
+  const lbPrev = document.getElementById('lbPrev');
+  const lbNext = document.getElementById('lbNext');
+
+  let lbItems = [], lbIndex = 0;
+  function openLightbox(album, idx) {
+    lbItems = album.images.map(i=>i.src);
+    lbIndex = idx;
+    showLb();
+  }
+  function showLb(){
+    lbImg.src = lbItems[lbIndex];
+    lbCaption.textContent = '';
+    lbCounter.textContent = `${lbIndex+1} / ${lbItems.length}`;
+    lb.setAttribute('aria-hidden','false');
+  }
+  function closeLb(){ lb.setAttribute('aria-hidden','true'); lbItems=[]; }
+  function prevLb(){ if(lbIndex>0){ lbIndex--; showLb(); } }
+  function nextLb(){ if(lbIndex < lbItems.length-1){ lbIndex++; showLb(); } }
+
+  lbClose.addEventListener('click', closeLb);
+  lbPrev.addEventListener('click', prevLb);
+  lbNext.addEventListener('click', nextLb);
+  window.addEventListener('keydown', (e)=>{
+    if (lb.getAttribute('aria-hidden') === 'false') {
+      if (e.key === 'Escape') closeLb();
+      if (e.key === 'ArrowLeft') prevLb();
+      if (e.key === 'ArrowRight') nextLb();
+    }
+  });
+
+  // helper
+  function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, c=>'&#'+c.charCodeAt(0)+';'); }
+
+  // initial
+  render();
+
+  // re-render when localStorage changes in same tab (not cross-tab)
+  window.addEventListener('storage', () => render()); // in case user imports/edits in another tab
+});
