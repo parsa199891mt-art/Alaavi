@@ -18,7 +18,6 @@
   const deleteLastBtn = document.getElementById('deleteLastBtn');
   const deleteAlbumBtn = document.getElementById('deleteAlbumBtn');
 
-  // storage helpers
   function load(){ try { return JSON.parse(localStorage.getItem(G_KEY))||[] } catch(e){ return [] } }
   function save(data){ localStorage.setItem(G_KEY, JSON.stringify(data)) }
 
@@ -33,14 +32,23 @@
     });
   }
 
-  // login
+  // 🔐 Login
   loginBtn.addEventListener('click', ()=>{
-    if(adminPassword.value===ADMIN_PASS){
-      loginBox.classList.add('hidden');
-      panel.classList.remove('hidden');
+    if(adminPassword.value === ADMIN_PASS){
+      loginBox.classList.add('hidden');   // پنهان کردن فرم ورود
+      panel.classList.remove('hidden');   // نمایش پنل مدیریت
       populateAlbums();
-    } else alert('رمز اشتباه است');
+    } else {
+      alert('رمز اشتباه است');
+      adminPassword.value='';
+      adminPassword.focus();
+    }
   });
+
+  adminPassword.addEventListener('keydown', e=>{ if(e.key==='Enter') loginBtn.click(); });
+
+  // بعد از ورود تمام عملکردهای پنل مثل قبل کار میکنه:
+  // ایجاد آلبوم، آپلود تصویر، ذخیره در localStorage، حذف تصویر و آلبوم
 
   // create album
   createAlbumBtn.addEventListener('click', ()=>{
@@ -143,7 +151,4 @@
     });
   }
 
-  // init
-  populateAlbums();
-  adminPassword.addEventListener('keydown', e=>{ if(e.key==='Enter') loginBtn.click(); });
 })();
