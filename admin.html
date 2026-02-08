@@ -1,34 +1,53 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>پنل مدیریت | مدرسه علوی</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>پنل مدیریت — مدرسه علوی</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="admin-page">
+  <div class="admin-wrap container">
 
-<div class="admin-card" id="loginBox">
-  <h2>ورود مدیر</h2>
-  <input type="password" id="password" placeholder="رمز عبور">
-  <button onclick="login()">ورود</button>
-</div>
+    <div id="loginBox" class="card login-card">
+      <h2>ورود مدیر</h2>
+      <input id="adminPassword" type="password" placeholder="رمز عبور">
+      <div class="row">
+        <button id="loginBtn" class="btn" type="button">ورود</button>
+      </div>
+      <p class="muted small">رمز: <strong>parsa1998</strong></p>
+    </div>
 
-<div class="admin-card hidden" id="adminPanel">
-  <h2>مدیریت گالری</h2>
+    <div id="panel" class="card hidden">
+      <h2>مدیریت گالری</h2>
 
-  <select id="albumSelect"></select>
-  <input type="text" id="newAlbum" placeholder="آلبوم جدید">
-  <input type="file" id="imageFile" accept="image/*">
+      <div class="row">
+        <label for="albumSelect">آلبوم موجود:</label>
+        <select id="albumSelect"></select>
+      </div>
 
-  <button onclick="uploadImage()">افزودن تصویر</button>
-  <button class="danger" onclick="deleteLast()">حذف آخرین عکس</button>
-  <button class="danger" onclick="deleteAlbum()">حذف آلبوم</button>
-</div>
+      <div class="row">
+        <label for="newAlbum">یا آلبوم جدید:</label>
+        <input id="newAlbum" type="text" placeholder="نام آلبوم جدید">
+        <button id="createAlbumBtn" class="btn small" type="button">ایجاد</button>
+      </div>
 
-<footer class="site-footer">
-  تمام حقوق این سایت متعلق به محمد پارسا ولیان است
-</footer>
+      <div class="row">
+        <label for="imageFiles">انتخاب تصویر(ها):</label>
+        <input id="imageFiles" type="file" accept="image/*" multiple>
+      </div>
 
-<script src="js/admin.js"></script>
+      <div id="preview" class="preview"></div>
+
+      <div class="row actions-row">
+        <button id="saveBtn" class="btn" type="button">ذخیره در مرورگر</button>
+        <button id="deleteLastBtn" class="btn danger" type="button">حذف آخرین عکس</button>
+        <button id="deleteAlbumBtn" class="btn danger" type="button">حذف آلبوم</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/admin.js"></script>
 </body>
 </html>
