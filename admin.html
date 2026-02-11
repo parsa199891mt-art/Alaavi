@@ -7,44 +7,18 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="admin-page">
+
   <div class="admin-wrap container">
 
+    <!-- فرم ورود -->
     <div id="loginBox" class="card login-card">
       <h2>ورود مدیر</h2>
       <input id="adminPassword" type="password" placeholder="رمز عبور">
-      <div class="row">
-        <button id="loginBtn" class="btn" type="button">ورود</button>
-      </div>
-      <p class="muted small">رمز: <strong>parsa1998</strong></p>
+      <button id="loginBtn" class="btn">ورود</button>
     </div>
 
-    <div id="panel" class="card hidden">
-      <h2>مدیریت گالری</h2>
-
-      <div class="row">
-        <label for="albumSelect">آلبوم موجود:</label>
-        <select id="albumSelect"></select>
-      </div>
-
-      <div class="row">
-        <label for="newAlbum">یا آلبوم جدید:</label>
-        <input id="newAlbum" type="text" placeholder="نام آلبوم جدید">
-        <button id="createAlbumBtn" class="btn small" type="button">ایجاد</button>
-      </div>
-
-      <div class="row">
-        <label for="imageFiles">انتخاب تصویر(ها):</label>
-        <input id="imageFiles" type="file" accept="image/*" multiple>
-      </div>
-
-      <div id="preview" class="preview"></div>
-
-      <div class="row actions-row">
-        <button id="saveBtn" class="btn" type="button">ذخیره در مرورگر</button>
-        <button id="deleteLastBtn" class="btn danger" type="button">حذف آخرین عکس</button>
-        <button id="deleteAlbumBtn" class="btn danger" type="button">حذف آلبوم</button>
-      </div>
-    </div>
+    <!-- پنل (کاملاً خالی، بعداً ساخته میشه) -->
+    <div id="panel"></div>
 
   </div>
 
