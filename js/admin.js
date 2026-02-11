@@ -1,149 +1,183 @@
-// admin.js
 (function(){
-  const ADMIN_PASS = 'parsa1998';
-  const G_KEY = 'alaavi_albums';
 
-  // DOM
-  const loginBox = document.getElementById('loginBox');
-  const panel = document.getElementById('panel');
-  const loginBtn = document.getElementById('loginBtn');
-  const adminPassword = document.getElementById('adminPassword');
+  const ADMIN_PASS = "parsa1998";
+  const G_KEY = "alaavi_albums";
 
-  const albumSelect = document.getElementById('albumSelect');
-  const newAlbum = document.getElementById('newAlbum');
-  const createAlbumBtn = document.getElementById('createAlbumBtn');
-  const imageFiles = document.getElementById('imageFiles');
-  const preview = document.getElementById('preview');
-  const saveBtn = document.getElementById('saveBtn');
-  const deleteLastBtn = document.getElementById('deleteLastBtn');
-  const deleteAlbumBtn = document.getElementById('deleteAlbumBtn');
+  const loginBtn = document.getElementById("loginBtn");
+  const adminPassword = document.getElementById("adminPassword");
+  const loginBox = document.getElementById("loginBox");
+  const panel = document.getElementById("panel");
 
-  // storage helpers
-  function load(){ try { return JSON.parse(localStorage.getItem(G_KEY))||[] } catch(e){ return [] } }
-  function save(data){ localStorage.setItem(G_KEY, JSON.stringify(data)) }
-
-  function populateAlbums(){
-    const albums = load();
-    albumSelect.innerHTML = '<option value="">انتخاب آلبوم</option>';
-    albums.forEach(a=>{
-      const o = document.createElement('option');
-      o.value = a.name;
-      o.textContent = a.name;
-      albumSelect.appendChild(o);
-    });
+  function load(){ 
+    try { return JSON.parse(localStorage.getItem(G_KEY)) || [] }
+    catch(e){ return [] }
   }
 
-  // login
-  loginBtn.addEventListener('click', ()=>{
-    if(adminPassword.value===ADMIN_PASS){
-      loginBox.classList.add('hidden');
-      panel.classList.remove('hidden');
-      populateAlbums();
-    } else alert('رمز اشتباه است');
-  });
+  function save(data){
+    localStorage.setItem(G_KEY, JSON.stringify(data));
+  }
 
-  // create album
-  createAlbumBtn.addEventListener('click', ()=>{
-    const name = (newAlbum.value||'').trim();
-    if(!name){ alert('نام آلبوم را وارد کن'); return; }
-    const albums = load();
-    if(albums.find(a=>a.name===name)){ alert('آلبوم با این نام وجود دارد'); return; }
-    albums.push({ name, images: [] });
-    save(albums);
-    newAlbum.value='';
-    populateAlbums();
-    alert('آلبوم ساخته شد');
-  });
-
-  // preview staging
-  let staging = [];
-  imageFiles.addEventListener('change', async e=>{
-    const files = Array.from(e.target.files||[]);
-    preview.innerHTML='';
-    staging=[];
-    for(const f of files){
-      if(!f.type.startsWith('image/')) continue;
-      const data = await fileToCompressedDataURL(f,0.7,1200);
-      staging.push({ name:f.name, src:data });
-      addPreviewCard(f.name,data);
+  // ورود
+  loginBtn.addEventListener("click", ()=>{
+    if(adminPassword.value === ADMIN_PASS){
+      loginSuccess();
+    } else {
+      alert("رمز اشتباه است");
+      adminPassword.value="";
     }
   });
 
-  function addPreviewCard(name,src){
-    const card = document.createElement('div'); card.className='preview-item';
-    card.innerHTML=`<img src="${src}"><div class="pname">${name}</div>`;
-    const rm = document.createElement('button'); rm.textContent='حذف'; rm.className='btn small';
-    rm.addEventListener('click', ()=>{
-      staging = staging.filter(s=>s.src!==src);
-      card.remove();
-    });
-    card.appendChild(rm);
-    preview.appendChild(card);
+  adminPassword.addEventListener("keydown", e=>{
+    if(e.key === "Enter") loginBtn.click();
+  });
+
+  function loginSuccess(){
+
+    loginBox.remove();
+
+    panel.innerHTML = `
+      <div class="card">
+        <h2>مدیریت گالری</h2>
+
+        <div class="row">
+          <select id="albumSelect"></select>
+          <input id="newAlbum" type="text" placeholder="نام آلبوم جدید">
+          <button id="createAlbumBtn" class="btn small">ایجاد آلبوم</button>
+        </div>
+
+        <div class="row">
+          <input id="imageFiles" type="file" accept="image/*" multiple>
+        </div>
+
+        <div id="preview" class="preview"></div>
+
+        <div class="row">
+          <button id="saveBtn" class="btn">ذخیره عکس</button>
+          <button id="deleteLastBtn" class="btn danger">حذف آخرین عکس</button>
+          <button id="deleteAlbumBtn" class="btn danger">حذف آلبوم</button>
+        </div>
+      </div>
+    `;
+
+    initPanel();
   }
 
-  // save images
-  saveBtn.addEventListener('click', ()=>{
-    const target = (newAlbum.value || albumSelect.value||'').trim();
-    if(!target){ alert('آلبوم را انتخاب یا نام جدید وارد کن'); return; }
-    if(!staging.length){ alert('تصویری برای ذخیره وجود ندارد'); return; }
-    const albums = load();
-    let album = albums.find(a=>a.name===target);
-    if(!album){ album={name:target,images:[]}; albums.push(album); }
-    staging.forEach(s=> album.images.push({ src:s.src, name:s.name, created:Date.now() }));
-    save(albums);
-    staging=[]; preview.innerHTML=''; imageFiles.value=''; newAlbum.value='';
-    populateAlbums();
-    alert('تصاویر ذخیره شدند');
-  });
+  function initPanel(){
 
-  // delete last
-  deleteLastBtn.addEventListener('click', ()=>{
-    const selected = albumSelect.value;
-    if(!selected){ alert('آلبوم را انتخاب کن'); return; }
-    const albums = load();
-    const album = albums.find(a=>a.name===selected);
-    if(!album || !album.images.length){ alert('عکسی برای حذف وجود ندارد'); return; }
-    album.images.pop();
-    save(albums);
-    populateAlbums();
-    alert('آخرین تصویر حذف شد');
-  });
+    const albumSelect = document.getElementById("albumSelect");
+    const newAlbum = document.getElementById("newAlbum");
+    const createAlbumBtn = document.getElementById("createAlbumBtn");
+    const imageFiles = document.getElementById("imageFiles");
+    const preview = document.getElementById("preview");
+    const saveBtn = document.getElementById("saveBtn");
+    const deleteAlbumBtn = document.getElementById("deleteAlbumBtn");
+    const deleteLastBtn = document.getElementById("deleteLastBtn");
 
-  // delete album
-  deleteAlbumBtn.addEventListener('click', ()=>{
-    const selected = albumSelect.value;
-    if(!selected){ alert('آلبوم را انتخاب کن'); return; }
-    if(!confirm('آیا مطمئنی این آلبوم حذف شود؟')) return;
-    let albums = load();
-    albums = albums.filter(a=>a.name!==selected);
-    save(albums);
-    populateAlbums();
-    alert('آلبوم حذف شد');
-  });
+    function populateAlbums(){
+      const albums = load();
+      albumSelect.innerHTML = '<option value="">انتخاب آلبوم</option>';
+      albums.forEach(a=>{
+        const o = document.createElement("option");
+        o.value = a.name;
+        o.textContent = a.name;
+        albumSelect.appendChild(o);
+      });
+    }
 
-  // compress images
-  function fileToCompressedDataURL(file, quality=0.8, maxWidth=1200){
-    return new Promise((res,rej)=>{
-      const img = new Image();
-      const reader = new FileReader();
-      reader.onload=e=>{
-        img.onload=()=>{
-          let w=img.width,h=img.height;
-          if(w>maxWidth){ const r=maxWidth/w; w=Math.round(w*r); h=Math.round(h*r); }
-          const canvas=document.createElement('canvas');
-          canvas.width=w; canvas.height=h;
-          canvas.getContext('2d').drawImage(img,0,0,w,h);
-          res(canvas.toDataURL('image/jpeg',quality));
+    populateAlbums();
+
+    // ساخت آلبوم
+    createAlbumBtn.addEventListener("click", ()=>{
+      const name = newAlbum.value.trim();
+      if(!name) return alert("نام آلبوم را وارد کن");
+
+      const albums = load();
+      if(albums.find(a=>a.name===name))
+        return alert("این آلبوم وجود دارد");
+
+      albums.push({name, images:[]});
+      save(albums);
+      newAlbum.value="";
+      populateAlbums();
+    });
+
+    // پیش‌نمایش آپلود
+    let staging = [];
+
+    imageFiles.addEventListener("change", e=>{
+      staging = [];
+      preview.innerHTML="";
+      const files = Array.from(e.target.files);
+
+      files.forEach(file=>{
+        if(!file.type.startsWith("image/")) return;
+
+        const reader = new FileReader();
+        reader.onload = function(ev){
+          staging.push({src:ev.target.result});
+          const img = document.createElement("img");
+          img.src = ev.target.result;
+          img.style.width="120px";
+          img.style.margin="5px";
+          img.style.borderRadius="8px";
+          preview.appendChild(img);
         };
-        img.onerror=()=>rej(new Error('img load error'));
-        img.src=e.target.result;
-      };
-      reader.onerror=()=>rej(new Error('file read error'));
-      reader.readAsDataURL(file);
+        reader.readAsDataURL(file);
+      });
     });
+
+    // ذخیره عکس
+    saveBtn.addEventListener("click", ()=>{
+      const selected = albumSelect.value || newAlbum.value.trim();
+      if(!selected) return alert("آلبوم را انتخاب کن");
+
+      let albums = load();
+      let album = albums.find(a=>a.name===selected);
+
+      if(!album){
+        album = {name:selected, images:[]};
+        albums.push(album);
+      }
+
+      album.images.push(...staging);
+      save(albums);
+
+      alert("عکس‌ها ذخیره شدند");
+      staging=[];
+      preview.innerHTML="";
+      imageFiles.value="";
+      populateAlbums();
+    });
+
+    // حذف آخرین عکس
+    deleteLastBtn.addEventListener("click", ()=>{
+      const selected = albumSelect.value;
+      if(!selected) return alert("آلبوم را انتخاب کن");
+
+      const albums = load();
+      const album = albums.find(a=>a.name===selected);
+
+      if(!album || album.images.length === 0)
+        return alert("عکسی برای حذف وجود ندارد");
+
+      album.images.pop();
+      save(albums);
+
+      alert("آخرین عکس حذف شد");
+    });
+
+    // حذف آلبوم
+    deleteAlbumBtn.addEventListener("click", ()=>{
+      const selected = albumSelect.value;
+      if(!selected) return alert("آلبوم را انتخاب کن");
+
+      if(!confirm("آیا مطمئنی این آلبوم حذف شود؟")) return;
+
+      let albums = load().filter(a=>a.name!==selected);
+      save(albums);
+      populateAlbums();
+    });
+
   }
 
-  // init
-  populateAlbums();
-  adminPassword.addEventListener('keydown', e=>{ if(e.key==='Enter') loginBtn.click(); });
 })();
